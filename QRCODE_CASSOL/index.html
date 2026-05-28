@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Studio</title>
+
+  <!-- ── FONTES EXTERNAS ─────────────────────────────────────────
+       DM Mono  → textos de código, labels, hints (monospace)
+       Syne     → títulos, botões, interface principal (display)
+  ──────────────────────────────────────────────────────────────── -->
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap&display=swap" rel="stylesheet">
+  <!-- ── ESTILOS ────────────────────────────────────────────────
+       Arquivo separado com todo o CSS da aplicação
+  ──────────────────────────────────────────────────────────────── -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- ── BIBLIOTECA QR CODE ────────────────────────────────────
+       qrcodejs: gera QR Codes em canvas/img via JavaScript puro
+       Deve ser carregada ANTES do script.js
+  ──────────────────────────────────────────────────────────────── -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- ── jsPDF ─────────────────────────────────────────────────
+       Geração de PDFs no browser, lado cliente
+  ──────────────────────────────────────────────────────────────── -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- ── JSZip ─────────────────────────────────────────────────
+       Compactação dos PDFs em arquivo .zip no browser
+  ──────────────────────────────────────────────────────────────── -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════
+       CABEÇALHO
+       Logo decorativa (grid 3x3 simulando pixels de QR) + título
+  ══════════════════════════════════════════════════════════════ -->
+  <header>
+    <!-- Logo formada por 9 spans em grid; cor alternada via CSS nth-child -->
+    <div class="logo-mark" aria-hidden="true">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+    <h1>QR Studio <span>v1.0</span></h1>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════
+       CONTEÚDO PRINCIPAL
+  ══════════════════════════════════════════════════════════════ -->
+  <main>
+
+    <!-- ── HERO / CHAMADA PRINCIPAL ─────────────────────────── -->
+    <div class="hero">
+      <h2>Gere seus<br><em>QR Codes</em><br>na hora.</h2>
+      <p>
+        Digite qualquer texto ou URL e clique em gerar.<br>
+        Use <code>&amp;&amp;</code> para criar vários de uma vez.
+      </p>
+    </div>
+
+    <!-- ── BLOCO DE INPUTS ───────────────────────────────────
+         Dois campos: conteúdo do QR e legenda (opcional)
+         Cada um aceita múltiplos valores separados por &
+    ──────────────────────────────────────────────────────────── -->
+    <div class="inputs-block">
+
+      <!-- Campo 1: conteúdo do QR Code (obrigatório) -->
+      <div class="input-wrap" id="inputWrap">
+        <div class="input-label">
+          <!-- Ícone de QR decorativo -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/>
+          </svg>
+          Conteúdo
+        </div>
+        <input
+          type="text"
+          id="qrInput"
+          placeholder="https://exemplo.com && Promoção 50% && Contato: (48) 99999-9999"
+          autocomplete="off"
+          spellcheck="false"
+        >
+      </div>
+
+      <!-- Campo 2: legendas (opcional) -->
+      <div class="input-wrap input-wrap--secondary" id="legendWrap">
+        <div class="input-label">
+          <!-- Ícone de texto decorativo -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="18" y2="18"/>
+          </svg>
+          Legenda <span class="optional-tag">opcional</span>
+        </div>
+        <input
+          type="text"
+          id="legendInput"
+          placeholder="Legenda do 1º && Legenda do 2º && ..."
+          autocomplete="off"
+          spellcheck="false"
+        >
+      </div>
+
+      <!-- Botão de gerar -->
+      <button class="btn-generate" onclick="generate()">Gerar ↗</button>
+    </div>
+
+    <!-- Dica de uso exibida abaixo dos inputs -->
+    <p class="hint">
+      Separe com <code>&amp;&amp;</code> para múltiplos
+      &nbsp;·&nbsp;
+      Legenda é opcional — se quiser só no 1º, escreva apenas uma
+      &nbsp;·&nbsp;
+      Enter para gerar
+    </p>
+
+    <!-- ── BARRA DE CONTROLES ────────────────────────────────
+         Exibida apenas após gerar QR Codes (display: none → flex via JS)
+         Mostra contagem de resultados, botão baixar todos e botão limpar
+    ──────────────────────────────────────────────────────────── -->
+    <div class="controls-bar" id="controlsBar">
+      <div class="controls-left">
+        <h3>Resultados</h3>
+        <!-- Badge com o número de QR Codes gerados, atualizado via JS -->
+        <span class="count-badge" id="countBadge">0</span>
+      </div>
+      <div class="controls-right">
+        <!-- Botão de baixar todos como ZIP de PDFs -->
+        <button class="btn-download-all" id="btnDownloadAll" onclick="downloadAll()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Baixar todos (.zip)
+        </button>
+        <button class="btn-clear-all" onclick="clearAll()">Limpar tudo</button>
+      </div>
+    </div>
+
+    <!-- ── ESTADO VAZIO ──────────────────────────────────────
+         Exibido quando nenhum QR Code foi gerado ainda
+         Escondido via JS assim que a geração acontece
+    ──────────────────────────────────────────────────────────── -->
+    <div id="emptyState">
+      <!-- Ícone decorativo simulando pixels de QR apagados -->
+      <div class="empty-icon" aria-hidden="true">
+        <div></div><div></div><div></div>
+        <div></div><div></div><div></div>
+        <div></div><div></div><div></div>
+      </div>
+      <p>Nenhum QR Code gerado ainda.</p>
+    </div>
+
+    <!-- ── GRADE DE QR CODES ─────────────────────────────────
+         Container onde os cards de QR Code são injetados via JS
+         Usa CSS Grid com auto-fill para se adaptar à largura
+    ──────────────────────────────────────────────────────────── -->
+    <div id="qrGrid"></div>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════
+       TOAST / NOTIFICAÇÃO
+       Aparece no rodapé central com mensagens de feedback
+       Controlado via JS (classe .show adiciona visibilidade)
+  ══════════════════════════════════════════════════════════════ -->
+  <div id="toast">✓ Baixado com sucesso</div>
+
+  <!-- ── SCRIPT PRINCIPAL ──────────────────────────────────────
+       Carregado por último para garantir que o DOM já existe
+       e que as bibliotecas já foram carregadas
+  ──────────────────────────────────────────────────────────────  -->
+  <script src="script.js"></script>
+</body>
+</html>

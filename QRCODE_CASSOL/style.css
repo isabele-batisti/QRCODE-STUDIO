@@ -1,0 +1,640 @@
+/* ════════════════════════════════════════════════════════════════
+   QR STUDIO — style.css
+   Organização:
+     1. Reset & Variáveis
+     2. Base / Body
+     3. Cabeçalho (header)
+     4. Conteúdo principal (main / hero)
+     5. Bloco de inputs
+     6. Dica de uso (hint)
+     7. Barra de controles
+     8. Estado vazio
+     9. Grade de QR Codes
+    10. Card de QR Code
+    11. Legenda do card
+    12. Toast (notificação)
+    13. Responsivo (mobile)
+════════════════════════════════════════════════════════════════ */
+
+
+/* ════════════════════════════════════════════════════════════════
+   1. RESET & VARIÁVEIS
+════════════════════════════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:        #0d0d0f;
+  --surface:   #141416;
+  --surface2:  #1c1c1f;
+
+  --border:    #2a2a2e;
+  --border2:   #3a3a3f;
+
+  --accent:    #b8f400;
+  --accent2:   #b8f400;
+
+  /* Cor PDF — ciano suave que contrasta bem com o amarelo do PNG */
+  --accent-pdf: #47c8ff;
+
+  --text:      #f0f0f0;
+  --text2:     #8a8a95;
+  --text3:     #5a5a65;
+
+  --radius:    12px;
+  --radius-lg: 20px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   2. BASE / BODY
+════════════════════════════════════════════════════════════════ */
+body {
+  font-family: 'Syne', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   3. CABEÇALHO
+════════════════════════════════════════════════════════════════ */
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 28px 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-mark {
+  width: 36px;
+  height: 36px;
+  background: #b8f400;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 3px;
+  padding: 6px;
+}
+
+.logo-mark span {
+  background: var(--bg);
+  border-radius: 2px;
+}
+
+.logo-mark span:nth-child(1),
+.logo-mark span:nth-child(3),
+.logo-mark span:nth-child(7),
+.logo-mark span:nth-child(9) {
+  background: transparent;
+}
+
+header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+header h1 span {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  margin-left: 4px;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   4. CONTEÚDO PRINCIPAL — MAIN / HERO
+════════════════════════════════════════════════════════════════ */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 40px 0;
+}
+
+.hero {
+  margin-bottom: 40px;
+}
+
+.hero h2 {
+  font-size: clamp(36px, 6vw, 58px);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.hero h2 em {
+  font-style: normal;
+  color: #b8f400;
+}
+
+.hero p {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+.hero p code {
+  background: var(--surface2);
+  color: #b8f400;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   5. BLOCO DE INPUTS
+════════════════════════════════════════════════════════════════ */
+.inputs-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.input-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: border-color 0.2s;
+}
+
+.input-wrap:focus-within {
+  border-color: #b8f400;
+}
+
+.input-wrap--secondary {
+  border-style: dashed;
+  border-color: var(--border2);
+}
+
+.input-wrap--secondary:focus-within {
+  border-style: solid;
+  border-color: #b8f400;
+}
+
+.input-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.optional-tag {
+  font-size: 10px;
+  background: var(--surface2);
+  color: var(--text3);
+  padding: 1px 6px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.input-wrap input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  padding: 4px 0;
+}
+
+.input-wrap input::placeholder {
+  color: var(--text3);
+}
+
+.btn-generate {
+  background: #b8f400;
+  color: var(--bg);
+  border: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 16px 28px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: background 0.15s, transform 0.1s;
+  align-self: flex-end;
+  min-width: 140px;
+}
+
+.btn-generate:hover  { background: #b8f400; }
+.btn-generate:active { transform: scale(0.97); }
+
+
+/* ════════════════════════════════════════════════════════════════
+   6. DICA DE USO (hint)
+════════════════════════════════════════════════════════════════ */
+.hint {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  padding-left: 4px;
+  line-height: 1.7;
+}
+
+.hint code {
+  color: #b8f400;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   7. BARRA DE CONTROLES
+   controls-right agrupa o botão "baixar todos" e "limpar tudo"
+════════════════════════════════════════════════════════════════ */
+.controls-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  margin: 44px 0 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.controls-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Lado direito: agrupa "baixar todos" + "limpar tudo" */
+.controls-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.controls-bar h3 {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+
+.count-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: #b8f400;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* Botão "Baixar todos (.zip)" — destaque com borda colorida */
+.btn-download-all {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: 1px solid #b8f400;
+  color: #b8f400;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.btn-download-all:hover {
+  background: #b8f400;
+  color: var(--bg);
+}
+
+.btn-download-all:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-clear-all {
+  background: none;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.btn-clear-all:hover {
+  border-color: #ff5555;
+  color: #ff5555;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   8. ESTADO VAZIO
+════════════════════════════════════════════════════════════════ */
+#emptyState {
+  text-align: center;
+  padding: 80px 0;
+}
+
+.empty-icon {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 24px;
+  opacity: 0.15;
+}
+
+.empty-icon div {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: var(--text2);
+}
+
+.empty-icon div:nth-child(2),
+.empty-icon div:nth-child(4),
+.empty-icon div:nth-child(6),
+.empty-icon div:nth-child(8) {
+  background: transparent;
+}
+
+#emptyState p {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text3);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   9. GRADE DE QR CODES
+════════════════════════════════════════════════════════════════ */
+#qrGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   10. CARD DE QR CODE
+════════════════════════════════════════════════════════════════ */
+.qr-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  animation: slideUp 0.35s ease both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.qr-card-header {
+  padding: 16px 18px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.qr-index {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.qr-len {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  background: var(--surface2);
+  color: var(--text3);
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.qr-canvas-wrap {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.qr-canvas-wrap canvas,
+.qr-canvas-wrap img {
+  display: block;
+  image-rendering: pixelated;
+}
+
+.qr-card-footer {
+  padding: 14px 18px;
+}
+
+.qr-text-preview {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 12px;
+}
+
+/* ── Grupo de botões PNG + PDF ──────────────────────────────── */
+.btn-download-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* Base comum para ambos os botões de download do card */
+.btn-download {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 10px 8px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.btn-download svg {
+  flex-shrink: 0;
+}
+
+/* PNG: hover amarelo (accent padrão) */
+.btn-download--png:hover {
+  background: #b8f400;
+  border-color: #b8f400;
+  color: var(--bg);
+}
+
+/* PDF: hover ciano */
+.btn-download--pdf:hover {
+  background: var(--accent-pdf);
+  border-color: var(--accent-pdf);
+  color: var(--bg);
+}
+
+.btn-download:active {
+  transform: scale(0.98);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   11. LEGENDA DO CARD
+════════════════════════════════════════════════════════════════ */
+.qr-caption-wrap {
+  padding: 14px 18px 16px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.qr-caption {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   12. TOAST / NOTIFICAÇÃO
+════════════════════════════════════════════════════════════════ */
+#toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  padding: 12px 24px;
+  border-radius: 40px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  white-space: nowrap;
+  z-index: 100;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+
+/* ════════════════════════════════════════════════════════════════
+   13. RESPONSIVO — MOBILE (≤ 600px)
+════════════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  header { padding: 20px; }
+
+  main { padding: 40px 20px 0; }
+
+  .btn-generate {
+    width: 100%;
+    align-self: stretch;
+  }
+
+  /* Em mobile, botões PNG/PDF ficam menores mas mantêm dois lados a lado */
+  .btn-download {
+    font-size: 11px;
+    padding: 9px 6px;
+  }
+
+  /* "Baixar todos" ocupa largura completa em mobile */
+  .controls-right {
+    width: 100%;
+  }
+
+  .btn-download-all {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@font-face {
+  font-family: 'Syne';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/syne@5.0.12/files/syne-latin-800-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Syne';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/syne@5.0.12/files/syne-latin-700-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Syne';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/syne@5.0.12/files/syne-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/npm/@fontsource/dm-mono@5.0.12/files/dm-mono-latin-400-normal.woff2') format('woff2');
+}
