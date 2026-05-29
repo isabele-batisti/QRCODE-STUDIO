@@ -638,3 +638,21 @@ main {
   font-display: swap;
   src: url('https://cdn.jsdelivr.net/npm/@fontsource/dm-mono@5.0.12/files/dm-mono-latin-400-normal.woff2') format('woff2');
 }
+
+.logo-img {
+  height: 48px;
+  width: auto;
+  display: block;
+}
+
+
+
+
+
+
+
+
+
+
+
+
